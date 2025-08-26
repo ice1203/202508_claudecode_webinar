@@ -30,11 +30,11 @@ variable "prefix" {
 variable "lambda_runtime" {
   type        = string
   description = "Lambda runtime version"
-  default     = "python3.9"
+  default     = "python3.12"
 
   validation {
-    condition     = contains(["python3.9", "nodejs18.x"], var.lambda_runtime)
-    error_message = "Lambda runtime must be either python3.9 or nodejs18.x."
+    condition     = contains(["python3.12", "python3.11", "python3.10", "nodejs20.x", "nodejs18.x"], var.lambda_runtime)
+    error_message = "Lambda runtime must be one of: python3.12, python3.11, python3.10, nodejs20.x, nodejs18.x."
   }
 }
 

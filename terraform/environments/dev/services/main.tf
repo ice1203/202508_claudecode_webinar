@@ -85,7 +85,7 @@ data "aws_iam_policy_document" "lambda_dynamodb_access" {
 resource "aws_lambda_function" "get_todos" {
   function_name = "${var.prefix}-get-todos"
   role         = aws_iam_role.lambda_execution_role.arn
-  handler      = var.lambda_runtime == "python3.9" ? "index.lambda_handler" : "index.handler"
+  handler      = startswith(var.lambda_runtime, "python") ? "index.lambda_handler" : "index.handler"
   runtime      = var.lambda_runtime
   timeout      = var.lambda_timeout
 
@@ -110,7 +110,7 @@ resource "aws_lambda_function" "get_todos" {
 resource "aws_lambda_function" "create_todo" {
   function_name = "${var.prefix}-create-todo"
   role         = aws_iam_role.lambda_execution_role.arn
-  handler      = var.lambda_runtime == "python3.9" ? "index.lambda_handler" : "index.handler"
+  handler      = startswith(var.lambda_runtime, "python") ? "index.lambda_handler" : "index.handler"
   runtime      = var.lambda_runtime
   timeout      = var.lambda_timeout
 
@@ -135,7 +135,7 @@ resource "aws_lambda_function" "create_todo" {
 resource "aws_lambda_function" "update_todo" {
   function_name = "${var.prefix}-update-todo"
   role         = aws_iam_role.lambda_execution_role.arn
-  handler      = var.lambda_runtime == "python3.9" ? "index.lambda_handler" : "index.handler"
+  handler      = startswith(var.lambda_runtime, "python") ? "index.lambda_handler" : "index.handler"
   runtime      = var.lambda_runtime
   timeout      = var.lambda_timeout
 
@@ -160,7 +160,7 @@ resource "aws_lambda_function" "update_todo" {
 resource "aws_lambda_function" "delete_todo" {
   function_name = "${var.prefix}-delete-todo"
   role         = aws_iam_role.lambda_execution_role.arn
-  handler      = var.lambda_runtime == "python3.9" ? "index.lambda_handler" : "index.handler"
+  handler      = startswith(var.lambda_runtime, "python") ? "index.lambda_handler" : "index.handler"
   runtime      = var.lambda_runtime
   timeout      = var.lambda_timeout
 
@@ -186,7 +186,7 @@ data "archive_file" "lambda_placeholder" {
   type        = "zip"
   output_path = "lambda_placeholder.zip"
   source {
-    content = var.lambda_runtime == "python3.9" ? <<EOF
+    content = startswith(var.lambda_runtime, "python") ? <<EOF
 import json
 
 def lambda_handler(event, context):
@@ -215,7 +215,7 @@ exports.handler = async (event) => {
     };
 };
 EOF
-    filename = "index.${var.lambda_runtime == "python3.9" ? "py" : "js"}"
+    filename = "index.${startswith(var.lambda_runtime, "python") ? "py" : "js"}"
   }
 }
 

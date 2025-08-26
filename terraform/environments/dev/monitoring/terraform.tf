@@ -11,7 +11,7 @@ terraform {
   }
 
   backend "s3" {
-    bucket  = "web3-todo-terraform-state"
+    bucket  = "web3-todo-app-terraform-state"
     key     = "dev/monitoring/terraform.tfstate"
     region  = "ap-northeast-1"
     encrypt = true

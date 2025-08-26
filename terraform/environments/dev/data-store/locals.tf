@@ -4,11 +4,10 @@ locals {
 
   # Common tags for all resources
   common_tags = {
-    Environment   = var.environment
-    Project       = var.project_name
-    Component     = "data-store"
-    ManagedBy     = "terraform"
-    CreatedDate   = formatdate("YYYY-MM-DD", timestamp())
+    Environment = var.environment
+    Project     = var.project_name
+    Component   = "data-store"
+    ManagedBy   = "terraform"
   }
 
   # DynamoDB table configuration
