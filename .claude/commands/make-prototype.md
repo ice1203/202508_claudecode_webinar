@@ -4,19 +4,19 @@
 
 ## 実行フロー
 
-### Phase 1: 要件分析・設計
-```bash
-/make-prototype [要件定義フォルダパス]
-```
-- 要件定義ファイル群を分析
-- AWSリソース構成を抽出・マッピング
-- コンポーネント依存関係を解析
-- 実装戦略を策定
-
-### Phase 2: 並列実装・品質チェック
-各コンポーネントでサブエージェントが並列実行：
-- **terraform-implementer**: Terraformコード実装
-- **terraform-code-checker**: 品質チェック・検証
+1. **要件解析** - 要件定義ファイルからAWSリソース構成を抽出・依存関係分析
+2. **State分離設計** - 4つの基本State構成に沿ったリソース分類
+   - **network/**: VPC, Subnet, Internet Gateway, Route Table
+   - **data-store/**: RDS、S3などデータ永続保管リソースとIAMロール、セキュリティグループ  
+   - **services/**: ECS,EKS,EC2,Lambdaなどサービス中核リソースとIAMロール、セキュリティグループ
+   - **monitoring/**: CloudWatch, 監視関連IAMロール
+3. **管理ファイル作成** - `terraform/.proto-tasks/` に進捗管理ファイル群を生成
+   - task-list.md, component-status.json, implementation-log.md
+4. **並列実装** - 各state同時並列実装（最大4並列: network, data-store, services, monitoring）
+   - **terraform-enterprise-implementer**: 各stateを並列でTerraformコード実装
+   - 依存関係は各state内で適切に定義（data sourceやremote state参照等）
+5. **品質チェック** - 各state完了時に自動品質検証  
+   - **terraform-code-checker**: 品質チェック・検証
 
 ## 使用方法
 
@@ -36,22 +36,13 @@
 | `--tasks-only` | タスクリストのみ作成 | `/make-prototype [パス] --tasks-only` | 実装計画の事前確認・レビュー |
 | `-q` | Quick mode (基本構成のみ) | `/make-prototype [パス] -q` | 最小構成でのプロトタイプ |
 
-## 実行戦略
+## 実装戦略
 
 要件定義から抽出されたAWSリソースを依存関係に基づいて段階的に並列実行：
 
-### 実行フロー
-1. **要件解析** - 要件定義ファイルからAWSリソース構成を抽出
-2. **依存関係分析** - リソース間の依存関係を自動解析
-3. **リソース分類** - 4つの基本State構成に沿ったリソース分類
-4. **State分離設計** - 実用的な4State構成に集約
-   - **network/**: VPC, Subnet, Internet Gateway, Route Table (共通ネットワーク基盤のみ)
-   - **data-store/**: RDS、S3などデータの永続保管用リソースとそれらリソースで使用するIAMロール、セキュリティグループ
-   - **services/**: 実際にサービスを行う中核となるリソース群を定義、例えばECS,EKS,EC2,Lambdaとそれらに使用されるIAMロール、セキュリティグループ
-   - **monitoring/**: CloudWatch, 監視関連IAMロール
-5. **タスク作成** - 4つのstate単位でTerraform実装タスクを生成
-6. **並列実行** - 依存関係に基づく段階的な並列実装
-7. **品質チェック** - 各state完了時に自動品質検証
+1. **タスク作成** - 4つのstate単位でTerraform実装タスクを生成
+2. **サブエージェント並列実行** - terraform-enterprise-implementer による各state実装
+3. **品質検証** - terraform-code-checker による自動品質チェック
 
 ## サブエージェント実行
 

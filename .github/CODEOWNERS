@@ -1,0 +1,20 @@
+# CODEOWNERS - 必須レビュワー設定
+
+# デフォルト: 全ファイルのレビューが必要
+* @ice1203
+
+# Terraform関連ファイル: インフラ変更のため厳格にレビュー
+terraform/ @ice1203
+*.tf @ice1203
+*.tfvars @ice1203
+
+# セキュリティ設定: セキュリティ関連変更のため必須レビュー
+.github/ @ice1203
+.github/workflows/ @ice1203
+.github/SECURITY.md @ice1203
+.gitignore @ice1203
+
+# ドキュメント: 技術文書の整合性確保
+docs/ @ice1203
+README.md @ice1203
+*.md @ice1203
