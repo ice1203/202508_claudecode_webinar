@@ -160,19 +160,6 @@ AWS上でDynamoDBを使用したシンプルなWeb3層構造のTodoアプリケ�
 - IAM Roles and Policies
 - CloudWatch Log Groups
 
-### ディレクトリ構造
-
-```
-terraform/
-├── main.tf
-├── variables.tf
-├── outputs.tf
-├── lambda.tf
-├── api_gateway.tf
-├── dynamodb.tf
-└── iam.tf
-```
-
 ## 受け入れ基準
 
 ### 機能テスト
